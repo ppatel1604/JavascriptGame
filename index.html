@@ -33,12 +33,26 @@
         var dx = 2;
         var dy = -2;
         var ballRadius = 10;
+        var paddleHeight = 10;
+        var paddleWidth = 75;
+        var paddleX = (canvas.width-paddleWidth)/2;
+        var rightPressed = false;
+        var leftPressed = false;
         
         //Draw a ball.
         function drawBall(){
             ctx.beginPath();
             ctx.arc(x, y, 10, ballRadius, 0, Math.PI * 2);
             ctx.fillStyle = '#0095DD';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        //Draw a paddle.
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+            ctx.fillStyle = "#0095DD";
             ctx.fill();
             ctx.closePath();
         }
@@ -59,6 +73,26 @@
 
             x += dx;
             y += dy;
+        }
+
+        //keyHandler for up and down button.
+        document.addEventListener("keydown", keyDownHandler, false);
+        function keyDownHandler(e){
+            if(e.keyCode == 39){
+                rightPressed = true;
+            }
+            else if(e.keyCode == 37){
+                leftPressed = true;
+            }
+        }
+        document.addEventListener("keyup", keyUpHandler, false);
+        function keyUpHandler(e){
+            if(e.keyCode == 39){
+                rightPressed = false;
+            }
+            else if(e.keyCode == 37){
+                leftPressed = false;
+            }
         }
 
         //Draw and repeat continuosly.
