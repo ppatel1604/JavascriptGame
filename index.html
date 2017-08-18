@@ -46,10 +46,10 @@
 
         //Create bricks
         var bricks = [];
-        for(c=0; c<brickColumnCount; c++){
+        for (c = 0; c < brickColumnCount; c++) {
             bricks[c] = [];
-            for(r=0; r<brickRowCount; r++){
-                bricks[c][r] = {x: 0, y: 0};
+            for (r = 0; r < brickRowCount; r++) {
+                bricks[c][r] = { x: 0, y: 0, status: 1 };
             }
         }
 
@@ -82,7 +82,7 @@
             ctx.fill();
             ctx.closePath();
         }
-        
+
         //Draw the paddle.
         function drawPaddle() {
             ctx.beginPath();
@@ -93,9 +93,10 @@
         }
 
         //Draw bricks
-           function drawBricks() {
-                for (c = 0; c < brickColumnCount; c++) {
-                    for (r = 0; r < brickRowCount; r++) {
+        function drawBricks() {
+            for (c = 0; c < brickColumnCount; c++) {
+                for (r = 0; r < brickRowCount; r++) {
+                    if (bricks[c][r].status == 1) {
                         var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
                         var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
                         bricks[c][r].x = brickX;
@@ -108,6 +109,22 @@
                     }
                 }
             }
+        }
+
+        //Create collision between bricks and ball.
+        function collisionDetection() {
+            for (c = 0; c < brickColumnCount; c++) {
+                for (r = 0; r < brickRowCount; r++) {
+                    var b = bricks[c][r];
+                    if (b.status == 1) {
+                        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+                            dy = -dy;
+                            b.status = 0;
+                        }
+                    }
+                }
+            }
+        }
 
         //Draw the canvas with the ball and paddle.
         function draw() {
@@ -115,17 +132,20 @@
             drawBall();
             drawPaddle();
             drawBricks();
+            collisionDetection();
 
             if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
                 dx = -dx;
             }
             if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
                 dy = -dy;
-            //Create Game Over function.
-            }else if(y + dy < canvas.height-ballRadius){
-                if(x > paddleX && x < paddleX + paddleWidth){
-                    dy = -dy;
-                } else{
+                //Create Game Over function.
+            } else if (y + dy > canvas.height - ballRadius) {
+                if (x > paddleX && x < paddleX + paddleWidth) {
+                    if (y = y - paddleHeight) {
+                        dy = -dy;
+                    }
+                } else {
                     alert("GAME OVER");
                     document.location.reload();
                 }
